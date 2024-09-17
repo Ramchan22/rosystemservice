@@ -59,7 +59,7 @@ public class WebSecurity {
 				.cors(cors -> cors.configurationSource(request -> {
 					// Customize CORS configuration for your endpoints
 					CorsConfiguration config = new CorsConfiguration();
-					config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Add allowed origins
+					config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://ramaquatech.netlify.app")); // Add allowed origins
 					config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Add allowed
 																										// methods
 					config.setAllowedHeaders(Arrays.asList("*"));
