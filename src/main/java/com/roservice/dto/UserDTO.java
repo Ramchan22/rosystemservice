@@ -47,8 +47,10 @@ public class UserDTO implements Serializable {
 
 	private Boolean isUserLogedIn = false;
 
+	private Long employeeId;
+
 	public UserDTO(String userName, String emailId, String mobileNumber, String firstName, String middleName,
-			String lastName, Boolean isAdminUser, Boolean isOfficeAssistant, Boolean isUserLogedIn) {
+			String lastName, Boolean isAdminUser, Boolean isOfficeAssistant, Boolean isUserLogedIn, Long employeeId) {
 		super();
 
 		this.userName = userName;
@@ -60,6 +62,7 @@ public class UserDTO implements Serializable {
 		this.isAdminUser = isAdminUser;
 		this.isOfficeAssistant = isOfficeAssistant;
 		this.isUserLogedIn = isUserLogedIn;
+		this.employeeId = employeeId;
 
 	}
 

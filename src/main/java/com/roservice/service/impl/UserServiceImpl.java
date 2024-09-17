@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
 									userDetails.getMobileNumber(), userDetails.getFirstName(),
 									userDetails.getMiddleName(), userDetails.getLastName(),
 									userDetails.getIsAdminUser(), userDetails.getIsOfficeAssistant(),
-									userDetails.getIsUserLogedIn()))
+									userDetails.getIsUserLogedIn(), userDetails.getId()))
 							.collect(Collectors.toList());
 
 				}
@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
 									userDetails.getMobileNumber(), userDetails.getFirstName(),
 									userDetails.getMiddleName(), userDetails.getLastName(),
 									userDetails.getIsAdminUser(), userDetails.getIsOfficeAssistant(),
-									userDetails.getIsUserLogedIn()))
+									userDetails.getIsUserLogedIn(), userDetails.getId()))
 							.collect(Collectors.toList());
 
 				}
