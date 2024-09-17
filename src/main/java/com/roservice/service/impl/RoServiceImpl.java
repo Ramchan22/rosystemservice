@@ -36,7 +36,7 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @Log4j2
 public class RoServiceImpl implements RoService {
-	
+
 	@Autowired
 	private ServiceRepository serviceRepository;
 
@@ -94,10 +94,7 @@ public class RoServiceImpl implements RoService {
 
 			try {
 
-				if (null != searchRequestDTO && null != searchRequestDTO.getFilters()) {
-
-					Map<String, Object> filterMap = new ConcurrentHashMap<String, Object>();
-					filterMap = searchRequestDTO.getFilters();
+				if (null != searchRequestDTO) {
 
 					// Step 1: Create a CriteriaBuilder instance
 					CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -106,44 +103,54 @@ public class RoServiceImpl implements RoService {
 					CriteriaQuery<ServiceDetailsEntity> cq = cb.createQuery(ServiceDetailsEntity.class);
 
 					// Step 3: Define the root of the query (the FROM clause)
-					Root<ServiceDetailsEntity> ServiceDetailsEntity = cq.from(ServiceDetailsEntity.class);
+					Root<ServiceDetailsEntity> serviceDetailsEntity = cq.from(ServiceDetailsEntity.class);
 
-					// Step 4: Create a list to store predicates (conditions)
-					List<Predicate> predicates = new ArrayList<>();
+					if (null != searchRequestDTO.getFilters()) {
 
-					// Step 5: Add predicates (dynamic conditions) based on the input criteria
-					if (null != filterMap.get("machineModelCode")
-							&& !filterMap.get("machineModelCode").toString().trim().isEmpty()) {
-						predicates.add(cb.equal(ServiceDetailsEntity.get("machineModelCode"),
-								filterMap.get("machineModelCode").toString()));
+						Map<String, Object> filterMap = new ConcurrentHashMap<String, Object>();
+						filterMap = searchRequestDTO.getFilters();
+
+						// Step 4: Create a list to store predicates (conditions)
+						List<Predicate> predicates = new ArrayList<>();
+
+						// Step 5: Add predicates (dynamic conditions) based on the input criteria
+						if (null != filterMap.get("machineModelCode")
+								&& !filterMap.get("machineModelCode").toString().trim().isEmpty()) {
+							predicates.add(cb.equal(serviceDetailsEntity.get("machineModelCode"),
+									filterMap.get("machineModelCode").toString()));
+						}
+
+						if (null != filterMap.get("machineModelValue")
+								&& !filterMap.get("machineModelValue").toString().trim().isEmpty()) {
+							predicates.add(cb.equal(serviceDetailsEntity.get("machineModelValue"),
+									filterMap.get("machineModelValue").toString()));
+						}
+
+						if (null != filterMap.get("customerName")
+								&& !filterMap.get("customerName").toString().trim().isEmpty()) {
+							predicates.add(cb.equal(serviceDetailsEntity.get("customerName"),
+									filterMap.get("customerName").toString()));
+						}
+
+						if (null != filterMap.get("customerMobileNumber")
+								&& !filterMap.get("customerMobileNumber").toString().trim().isEmpty()) {
+							predicates.add(cb.equal(serviceDetailsEntity.get("customerMobileNumber"),
+									filterMap.get("customerMobileNumber").toString()));
+						}
+
+						if (null != filterMap.get("customerArea")
+								&& !filterMap.get("customerArea").toString().trim().isEmpty()) {
+							predicates.add(cb.equal(serviceDetailsEntity.get("customerArea"),
+									filterMap.get("customerArea").toString()));
+						}
+
+						// Step 6: Set the predicates (conditions) to the CriteriaQuery
+						cq.where(cb.and(predicates.toArray(new Predicate[0])));
+
 					}
-
-					if (null != filterMap.get("machineModelValue")
-							&& !filterMap.get("machineModelValue").toString().trim().isEmpty()) {
-						predicates.add(cb.equal(ServiceDetailsEntity.get("machineModelValue"),
-								filterMap.get("machineModelValue").toString()));
-					}
-
-					if (null != filterMap.get("customerName")
-							&& !filterMap.get("customerName").toString().trim().isEmpty()) {
-						predicates.add(cb.equal(ServiceDetailsEntity.get("customerName"),
-								filterMap.get("customerName").toString()));
-					}
-
-					if (null != filterMap.get("customerMobileNumber")
-							&& !filterMap.get("customerMobileNumber").toString().trim().isEmpty()) {
-						predicates.add(cb.equal(ServiceDetailsEntity.get("customerMobileNumber"),
-								filterMap.get("customerMobileNumber").toString()));
-					}
-
-					if (null != filterMap.get("customerArea")
-							&& !filterMap.get("customerArea").toString().trim().isEmpty()) {
-						predicates.add(cb.equal(ServiceDetailsEntity.get("customerArea"),
-								filterMap.get("customerArea").toString()));
-					}
-
-					// Step 6: Set the predicates (conditions) to the CriteriaQuery
-					cq.where(cb.and(predicates.toArray(new Predicate[0])));
+					
+					// Adding the order by 'modifiedDate' in descending order
+					cq.orderBy(cb.desc(serviceDetailsEntity.get("modifiedDate")));
 
 					// Step 7: Create a query from the CriteriaQuery and execute it
 					TypedQuery<ServiceDetailsEntity> query = entityManager.createQuery(cq);
