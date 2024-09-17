@@ -57,4 +57,19 @@ public class UserRegistrationController extends BaseController {
 		return genericResponse;
 	}
 
+	@GetMapping("/getAllUser")
+	public GenericResponse getAllUser() {
+
+		log.info("Inside UserRegistrationController :: getAllUser() - START");
+
+		AuthenticationDTO authenticationDTO = findAuthenticationObject();
+
+		GenericResponse genericResponse = userService.getAllUser(authenticationDTO);
+
+		log.info("Inside UserRegistrationController :: getAllUser() - END");
+
+		return genericResponse;
+
+	}
+
 }

@@ -3,6 +3,8 @@
  */
 package com.roservice.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -28,5 +30,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("SELECT u FROM User u WHERE u.userName = :userName AND u.isUserLogedIn = :isUserLogedIn ")
 	User findByUserNameAndIsUserLogedIn(String userName, boolean isUserLogedIn);
+
+	User findByUserNameAndId(String userName, Long userId);
+
+	@Query(nativeQuery = true, value = "SELECT u.* FROM user u ")
+	List<User> findAllUserDetails();
+
+	@Query(nativeQuery = true, value = "SELECT u.* FROM user u WHERE u.is_admin_user = 0 ")
+	List<User> findAllUserDetailsExceptAdminUser();
 
 }

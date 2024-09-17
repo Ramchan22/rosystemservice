@@ -20,4 +20,6 @@ public interface UserService extends UserDetailsService {
 
 	GenericResponse logout(AuthenticationDTO authenticationDTO);
 
+	GenericResponse getAllUser(AuthenticationDTO authenticationDTO);
+
 }

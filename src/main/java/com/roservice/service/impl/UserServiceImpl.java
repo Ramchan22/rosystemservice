@@ -5,6 +5,8 @@ package com.roservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ import com.roservice.common.ErrorCode;
 import com.roservice.common.ErrorMessages;
 import com.roservice.common.GenericResponse;
 import com.roservice.common.Library;
+import com.roservice.dto.UserDTO;
 import com.roservice.entity.User;
 import com.roservice.repository.UserRepository;
 import com.roservice.service.UserService;
@@ -183,6 +186,68 @@ public class UserServiceImpl implements UserService {
 			return Library.getFailResponseCode(ErrorCode.EXCEPTION.getErrorCode(), ErrorMessages.EXCEPTION_MESSAGE);
 		}
 
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public GenericResponse getAllUser(AuthenticationDTO authenticationDTO) {
+		log.info("Inside UserServiceImpl :: getAllUser() - STRAT");
+
+		List<UserDTO> userDetailsDTOList = new ArrayList<UserDTO>();
+		try {
+			List<User> userDetailsList = new ArrayList<User>();
+
+			User user = userRepository.findByUserNameAndId(authenticationDTO.getUserName(),
+					authenticationDTO.getUserId());
+
+			if (null == user)
+				return Library.getFailResponseCode(ErrorCode.EXCEPTION.getErrorCode(), ErrorMessages.EXCEPTION_MESSAGE);
+
+			if (user.getIsAdminUser()) {
+
+				userDetailsList = userRepository.findAllUserDetails();
+
+				if (null != userDetailsList && !userDetailsList.isEmpty() && userDetailsList.size() > 0) {
+
+					userDetailsDTOList = userDetailsList.stream()
+							.filter(userDetails -> !authenticationDTO.getUserName().equals(userDetails.getUserName()))
+							.map(userDetails -> new UserDTO(userDetails.getUserName(), userDetails.getEmailId(),
+									userDetails.getMobileNumber(), userDetails.getFirstName(),
+									userDetails.getMiddleName(), userDetails.getLastName(),
+									userDetails.getIsAdminUser(), userDetails.getIsOfficeAssistant(),
+									userDetails.getIsUserLogedIn()))
+							.collect(Collectors.toList());
+
+				}
+
+			} else if (user.getIsOfficeAssistant()) {
+
+				userDetailsList = userRepository.findAllUserDetailsExceptAdminUser();
+
+				if (null != userDetailsList && !userDetailsList.isEmpty() && userDetailsList.size() > 0) {
+
+					userDetailsDTOList = userDetailsList.stream()
+							.map(userDetails -> new UserDTO(userDetails.getUserName(), userDetails.getEmailId(),
+									userDetails.getMobileNumber(), userDetails.getFirstName(),
+									userDetails.getMiddleName(), userDetails.getLastName(),
+									userDetails.getIsAdminUser(), userDetails.getIsOfficeAssistant(),
+									userDetails.getIsUserLogedIn()))
+							.collect(Collectors.toList());
+
+				}
+
+			}
+
+		} catch (Exception exception) {
+			log.error("<=== Error while get all the user details in UserServiceImpl :: getAllUser() ===>", exception);
+			exception.printStackTrace();
+		}
+
+		log.info("Inside UserServiceImpl :: getAllUser() - END");
+		return Library.getSuccessfulResponse(userDetailsDTOList, ErrorCode.SUCCESS_RESPONSE.getErrorCode(),
+				ErrorMessages.RECORED_FOUND);
 	}
 
 }
