@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -143,15 +144,18 @@ public class UserServiceImpl implements UserService {
 
 		AuthenticationDTO authenticationDTO = new AuthenticationDTO();
 
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.map(userDetails, authenticationDTO);
+
 //		BeanUtils.copyProperties(authenticationDTO, userDetails);
 
-		authenticationDTO.setFirstName(userDetails.getFirstName());
-		authenticationDTO.setIsAdminUser(userDetails.getIsAdminUser());
-		authenticationDTO.setIsOfficeAssistant(userDetails.getIsOfficeAssistant());
-		authenticationDTO.setLastName(userDetails.getLastName());
-		authenticationDTO.setMiddleName(userDetails.getMiddleName());
-		authenticationDTO.setUserId(userDetails.getId());
-		authenticationDTO.setUserName(userDetails.getUserName());
+//		authenticationDTO.setFirstName(userDetails.getFirstName());
+//		authenticationDTO.setIsAdminUser(userDetails.getIsAdminUser());
+//		authenticationDTO.setIsOfficeAssistant(userDetails.getIsOfficeAssistant());
+//		authenticationDTO.setLastName(userDetails.getLastName());
+//		authenticationDTO.setMiddleName(userDetails.getMiddleName());
+//		authenticationDTO.setUserId(userDetails.getId());
+//		authenticationDTO.setUserName(userDetails.getUserName());
 
 		userDetails.setIsUserLogedIn(true);
 		userRepository.save(userDetails);
